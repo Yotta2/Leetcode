@@ -25,24 +25,16 @@ using namespace std;
 
 class Solution {
 public:
-    int removeElement(int A[], int n, int elem) {
-        int i = 0;
-        int last = n - 1;
-        moveToNonElem(A, last, elem);
-        while (i <= last) {
-            if (A[i] == elem) {
-                swap(A[i], A[last]);
-                moveToNonElem(A, last, elem);
-            }
-            i++;
-        }
-        return i;
-    }
-    void moveToNonElem(int A[], int &last, int elem) {
-        while (last >= 0) {
-            if (A[last] != elem)
-                break;
-            last--;
+    vector<int> twoSum(vector<int> &numbers, int target) {
+        unordered_map<int, int> matchnumToIndexMap;
+        vector<int> ans;
+        for (int i = 0; i < numbers.size(); i++)
+            if (matchnumToIndexMap.find(numbers[i]) != matchnumToIndexMap.end()) {
+                ans.push_back(matchnumToIndexMap[numbers[i]] + 1);
+                ans.push_back(i + 1);
+                return ans;
+            } else {
+            matchnumToIndexMap[target - numbers[i]] = i;
         }
     }
 };
