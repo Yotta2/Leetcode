@@ -26,16 +26,10 @@ using namespace std;
 
 class Solution {
 public:
-    void init(vector<vector<bool> > &used, int row, int col) {
-        used.assign(row, vector<bool>());
-        for (int i = 0; i < used.size(); i++)
-            used[i].assign(col, false);
-    }
     bool exist(vector<vector<char> > &board, string word) {
         if (word.empty())
             return true;
-        vector<vector<bool> > used;
-        init(used, board.size(), board[0].size());
+        vector<vector<bool> > used(board.size(), vector<bool>(board[0].size(), false));
         for (int i = 0; i < board.size(); i++)
             for (int j = 0; j < board[0].size(); j++)
                 if (word[0] == board[i][j]) {
