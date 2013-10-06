@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <fstream>
+#include <set>
+#include <stack>
+#include <vector>
+#include <list>
+#include <cstdlib>
+#include <climits>
+#include <algorithm>
+#include <cmath>
+#include <unordered_map>
+#include <unordered_set>
+#include <map>
+#include <time.h>
+#include <functional>
+#include <queue>
+#include <cctype>
+#include <sstream>
+
+#define EPS 1e-6
+#define SIZE 11000
+
+using namespace std;
+
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int> > &obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        vector<vector<int> > f(m + 1, vector<int>(n + 1, 0));
+        if (obstacleGrid[m - 1][n - 1] == 0)
+            f[m - 1][n - 1] = 1;
+        for (int i = m - 1; i >= 0; i--)
+            for (int j = n - 1; j >= 0; j--)
+                if (i == m - 1 && j == n - 1 || obstacleGrid[i][j])
+                    continue;
+                else
+                    f[i][j] = f[i + 1][j] + f[i][j + 1];
+        return f[0][0];
+    }
+};
+
+int main() {
+    ofstream fout("sol.out");
+    ifstream fin("sol.in");
+
+    Solution sol;
+    return 0;
+}
+
