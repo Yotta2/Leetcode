@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,50 +38,31 @@ struct Interval {
 class Solution {
 public:
     vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+        bool inserted = false;
+        Interval mergedInterval(newInterval.start, newInterval.end);
         vector<Interval> ans;
-        bool leftInside = false; //the left end side of the newInterval is in side an interval
-        int nextIndex;
-        Interval mergedInterval;
         for (int i = 0; i < intervals.size(); i++) {
-            if (newInterval.start >= intervals[i].start && newInterval.start <= intervals[i].end) {
-                leftInside = true;
-                nextIndex = i;
-                break;
-            }
-            if (newInterval.start < intervals[i].start) {
-                nextIndex = i;
-                break;
-            }
-            ans.push_back(intervals[i]);
-        }
-
-        if (leftInside)
-            mergedInterval.start = intervals[nextIndex].start;
-        else
-            mergedInterval.start = newInterval.start;
-        bool foundRightPos = false;
-        for (int i = nextIndex; i < intervals.size(); i++) {
-            if (newInterval.end >= intervals[i].start && newInterval.end <= intervals[i].end) {
-                nextIndex = i + 1;
-                mergedInterval.end = intervals[i].end;
-                foundRightPos = true;
-                break;
-            }
-            if (newInterval.end < intervals[i].start) {
-                nextIndex = i;
-                mergedInterval.end = newInterval.end;
-                foundRightPos = true;
-                break;
-            }
-        }
-        if (foundRightPos) {
-            ans.push_back(mergedInterval);
-            for (int i = nextIndex; i < intervals.size(); i++)
+            if (intervals[i].end < newInterval.start)
                 ans.push_back(intervals[i]);
-        } else {
-            mergedInterval.end = newInterval.end;
-            ans.push_back(mergedInterval);
+            if (intervals[i].start <= newInterval.start
+                && newInterval.start <= intervals[i].end)
+                mergedInterval.start = min(intervals[i].start, newInterval.start);
+            if (intervals[i].start <= newInterval.end
+                && newInterval.end <= intervals[i].end) {
+                mergedInterval.end = max(intervals[i].end, newInterval.end);
+                ans.push_back(mergedInterval);
+                inserted = true;
+            }
+            if (intervals[i].start > newInterval.end) {
+                if (!inserted) {
+                    ans.push_back(mergedInterval);
+                    inserted = true;
+                }
+                ans.push_back(intervals[i]);
+            }
         }
+        if (!inserted)
+            ans.push_back(mergedInterval);
         return ans;
     }
 };
@@ -88,5 +71,11 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
+    vector<Interval> intervals;
+    intervals.push_back(Interval(1, 5));
+    intervals.push_back(Interval(6, 8));
+    Interval newInterval(5, 6);
+    sol.insert(intervals, newInterval);
     return 0;
 }
