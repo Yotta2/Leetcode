@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -25,41 +27,37 @@ using namespace std;
 
 class Solution {
 public:
-    struct State {
-        string word;
-        vector<string> path;
-    };
-
     int ladderLength(string start, string end, unordered_set<string> &dict) {
         queue<State> q;
-        unordered_set<string> visitedWord;
-        State state;
-        state.word = start;
-        state.path.push_back(start);
-        visitedWord.insert(start);
-        q.push(state);
+        unordered_set<string> visitedWords;
+        visitedWords.insert(start);
+        q.push(State(start, 1));
         while (!q.empty()) {
             State currState = q.front();
             q.pop();
             for (int i = 0; i < currState.word.size(); i++) {
-                string newWord = currState.word;
-                for (int j = 0; j < 26; j++) {
-                    newWord[i] = 'a' + j;
-                    if (newWord == end)
-                        return currState.path.size() + 1;
-                    if (visitedWord.find(newWord) == visitedWord.end() && dict.find(newWord) != dict.end()) {
-                        visitedWord.insert(newWord);
-                        State newState;
-                        newState.word = newWord;
-                        newState.path = currState.path;
-                        newState.path.push_back(newWord);
-                        q.push(newState);
+                string nextWord = currState.word;
+                for (char j = 'a'; j <= 'z'; j++) {
+                    nextWord[i] = j;
+                    if (nextWord == end)
+                        return currState.len + 1;
+                    if (dict.find(nextWord) != dict.end()
+                        && visitedWords.find(nextWord) == visitedWords.end()) {
+                        State nextState(nextWord, currState.len + 1);
+                        q.push(nextState);
+                        visitedWords.insert(nextState.word);
                     }
                 }
             }
         }
         return 0;
     }
+private:
+    struct State {
+        string word;
+        int len;
+        State(string _word, int _len) : word(_word), len(_len) {}
+    };
 };
 
 int main() {

@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -26,47 +28,38 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int> > threeSum(vector<int> &num) {
-        sort(num.begin(), num.end());
         vector<vector<int> > ans;
+        sort(num.begin(), num.end());
         int i = 0;
-        int a, b, c;
         while (i < num.size()) {
-            unordered_map<int, int> valueToIndexHm;
-            unordered_set<int> cSet;
-            a = num[i];
-            int sum = -a;
-            for (int j = i + 1; j < num.size(); j++)
-                if (valueToIndexHm.find(num[j]) != valueToIndexHm.end())
-                    cSet.insert(num[j]);
-                else
-                    valueToIndexHm[sum - num[j]] = j;
-            addSolutions(ans, a, cSet);
+            int a = num[i];
+            int target = -a;
+            int p = i + 1;
+            int q = num.size() - 1;
+            while (p < q) {
+                if (num[p] + num[q] == target) {
+                    vector<int> triplet;
+                    triplet.push_back(a);
+                    triplet.push_back(num[p]);
+                    triplet.push_back(num[q]);
+                    ans.push_back(triplet);
+                    p++;
+                    while (p < num.size() && num[p] == num[p - 1])
+                        p++;
+                    q--;
+                    while (q < num.size() && num[q] == num[q + 1])
+                        q--;
+                } else if (num[p] + num[q] > target) {
+                    q--;
+                } else {
+                    p++;
+                }
+            }
             i++;
-            i = findNextAIndex(i, num);
+            while (i < num.size() && num[i] == num[i - 1])
+                i++;
         }
         return ans;
-    }
-
-    void addSolutions(vector<vector<int> > &ans, int a, unordered_set<int> &cSet) {
-        for (unordered_set<int>::iterator itr = cSet.begin(); itr != cSet.end(); itr++) {
-            int c = *itr;
-            int b = 0 - a - c;
-            vector<int> sol;
-            sol.push_back(a);
-            sol.push_back(b);
-            sol.push_back(c);
-            ans.push_back(sol);
-        }
-    }
-
-    int findNextAIndex(int i, vector<int> &num) {
-        while (i < num.size()) {
-            if (num[i] == num[i - 1])
-                i++;
-            else
-                break;
-        }
-        return i;
     }
 };
 
@@ -75,5 +68,9 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
+    vector<int> num({-2,0,1,1,2});
+    vector<vector<int> > ans = sol.threeSum(num);
+    for (int i = 0; i < ans.size(); i++)
+        cout << ans[i][0] << " " << ans[i][1] << " " << ans[i][2] << endl;
     return 0;
 }

@@ -16,6 +16,9 @@
 #include <time.h>
 #include <functional>
 #include <queue>
+#include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -25,29 +28,24 @@ using namespace std;
 class Solution {
 public:
     void merge(int A[], int m, int B[], int n) {
-        int i, j, k;
-        i = m - 1;
-        j = n - 1;
-        k = m + n - 1;
-        while (true) {
-            if (i < 0 || j < 0)
-                break;
-            if (A[i] >= B[j]) {
-                A[k] = A[i];
-                k--;
-                i--;
+        int index = m + n - 1;
+        int indexA = m - 1;
+        int indexB = n - 1;
+        while (indexA >= 0 && indexB >= 0) {
+            if (A[indexA] >= B[indexB]) {
+                A[index] = A[indexA];
+                index--;
+                indexA--;
             } else {
-                A[k] = B[j];
-                k--;
-                j--;
+                A[index] = B[indexB];
+                index--;
+                indexB--;
             }
         }
-        while (true) {
-            if (j < 0)
-                break;
-            A[k] = B[j];
-            k--;
-            j--;
+        while (indexB >= 0) {
+            A[index] = B[indexB];
+            index--;
+            indexB--;
         }
     }
 };

@@ -16,6 +16,9 @@
 #include <time.h>
 #include <functional>
 #include <queue>
+#include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -25,13 +28,12 @@ using namespace std;
 class Solution {
 public:
     int climbStairs(int n) {
-        int f[SIZE];
-        memset(f, 0, sizeof(f));
-        f[1] = 1;
-        f[2] = 2;
-        for (int i = 3; i <= n; i++)
-            f[i] = f[i - 1] + f[i - 2];
-        return f[n];
+        vector<int> f(n + 1, 0);
+        f[n] = 1;
+        f[n - 1] = 1;
+        for (int i = n - 2; i >= 0; i--)
+            f[i] = f[i + 1] + f[i + 2];
+        return f[0];
     }
 };
 

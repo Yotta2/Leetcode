@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -25,23 +27,19 @@ using namespace std;
 
 class Solution {
 public:
-    double pow(double x, int n) {  //pay attention to the situation that n < 0
-         if (n == 0)
+    double pow(double x, int n) {
+        if (n == 0)
             return 1;
-         if (n == 1)
-            return x;
-         if (n == -1)
-            return 1 / x;
-         if (n % 2 == 0) {
+        if (n % 2 == 0) {
             double tmp = pow(x, n / 2);
             return tmp * tmp;
-         } else {
+        } else {
             double tmp = pow(x, n / 2);
             if (n > 0)
                 return tmp * tmp * x;
             else
-                return tmp * tmp * (1 / x);
-         }
+                return tmp * tmp / x;
+        }
     }
 };
 
