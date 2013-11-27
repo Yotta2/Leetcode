@@ -32,7 +32,7 @@ struct ListNode {
     int val;
     ListNode *next;
     ListNode(int x) : val(x), next(NULL) {}
- };
+};
 
 class Solution {
 public:
@@ -40,22 +40,22 @@ public:
         if (head == NULL)
             return NULL;
         ListNode *fastRunner = head;
-        ListNode *slowRunner = head;
+        ListNode *slowRunner0 = head;
+        ListNode *slowRunner1 = head;
         while (true) {
             for (int i = 0; i < 2; i++) {
                 fastRunner = fastRunner->next;
                 if (fastRunner == NULL)
                     return NULL;
             }
-            slowRunner = slowRunner->next;
-            if (fastRunner == slowRunner)
+            slowRunner0 = slowRunner0->next;
+            if (fastRunner == slowRunner0)
                 break;
         }
-        ListNode *slowRunner1 = head;
         while (true) {
-            if (slowRunner == slowRunner1)
-                return slowRunner;
-            slowRunner = slowRunner->next;
+            if (slowRunner0 == slowRunner1)
+                return slowRunner0;
+            slowRunner0 = slowRunner0->next;
             slowRunner1 = slowRunner1->next;
         }
     }

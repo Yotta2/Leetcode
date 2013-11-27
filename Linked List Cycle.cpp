@@ -39,8 +39,8 @@ public:
     bool hasCycle(ListNode *head) {
         if (head == NULL)
             return false;
-        ListNode *slowRunner = head;
         ListNode *fastRunner = head;
+        ListNode *slowRunner = head;
         while (true) {
             for (int i = 0; i < 2; i++) {
                 fastRunner = fastRunner->next;
@@ -50,8 +50,6 @@ public:
                     return true;
             }
             slowRunner = slowRunner->next;
-            if (slowRunner == NULL)
-                return false;
         }
     }
 };

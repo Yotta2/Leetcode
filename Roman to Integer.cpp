@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -25,36 +27,32 @@ using namespace std;
 
 class Solution {
 public:
-    void init(unordered_map<char, int> &letterToValueMap) {
-        letterToValueMap['I'] = 1;
-        letterToValueMap['V'] = 5;
-        letterToValueMap['X'] = 10;
-        letterToValueMap['L'] = 50;
-        letterToValueMap['C'] = 100;
-        letterToValueMap['D'] = 500;
-        letterToValueMap['M'] = 1000;
-    }
     int romanToInt(string s) {
-        unordered_map<char, int> letterToValueMap;
-        init(letterToValueMap);
-        int ans = 0;
+        numeralToValueHM hm;
+        init(hm);
         int i = 0;
+        int intValue = 0;
         while (i < s.size()) {
-            int currValue = letterToValueMap[s[i]];
-            if (i != s.size() - 1) {
-                int nextValue = letterToValueMap[s[i + 1]];
-                if (currValue >= nextValue)
-                    ans += currValue;
-                else {
-                    ans += nextValue - currValue;
-                    i++;
-                }
+            if (i != s.size() - 1 && hm[s[i]] < hm[s[i + 1]]) {
+                intValue += hm[s[i + 1]] - hm[s[i]];
+                i++;
             } else {
-                ans += currValue;
+                intValue += hm[s[i]];
             }
             i++;
         }
-        return ans;
+        return intValue;
+    }
+private:
+    typedef unordered_map<char, int> numeralToValueHM;
+    void init(numeralToValueHM &hm) {
+        hm['I'] = 1;
+        hm['V'] = 5;
+        hm['X'] = 10;
+        hm['L'] = 50;
+        hm['C'] = 100;
+        hm['D'] = 500;
+        hm['M'] = 1000;
     }
 };
 
@@ -62,5 +60,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }
