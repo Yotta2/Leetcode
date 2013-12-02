@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -41,19 +43,14 @@ public:
         inorderTraverse(root, prevVal, flag);
         return flag;
     }
-
+private:
     void inorderTraverse(TreeNode *root, int &prevVal, bool &flag) {
         if (root == NULL)
             return;
-        if (flag == false)
-            return;
         inorderTraverse(root->left, prevVal, flag);
-        if (root->val <= prevVal) {
+        if (root->val <= prevVal)
             flag = false;
-            return;
-        } else {
-            prevVal = root->val;
-        }
+        prevVal = root->val;
         inorderTraverse(root->right, prevVal, flag);
     }
 };

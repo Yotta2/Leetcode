@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -26,24 +28,11 @@ using namespace std;
 class Solution {
 public:
     int removeElement(int A[], int n, int elem) {
-        int i = 0;
-        int last = n - 1;
-        moveToNonElem(A, last, elem);
-        while (i <= last) {
-            if (A[i] == elem) {
-                swap(A[i], A[last]);
-                moveToNonElem(A, last, elem);
-            }
-            i++;
-        }
-        return i;
-    }
-    void moveToNonElem(int A[], int &last, int elem) {
-        while (last >= 0) {
-            if (A[last] != elem)
-                break;
-            last--;
-        }
+        int index = 0; // index is the index of the next non elem index to be filled
+        for (int i = 0; i < n; i++)
+            if (A[i] != elem)
+                A[index++] = A[i];
+        return index;
     }
 };
 
@@ -51,5 +40,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }

@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -28,23 +30,19 @@ public:
     char *strStr(char *haystack, char *needle) {
         if (*haystack == '\0' && *needle == '\0')
             return haystack;
-        char *start = haystack;
-        while (true) {
-            if (*start == '\0')
-                return NULL;
-            char *p = start;
-            char *q = needle;
-            while (true) {
-                if (*p == '\0' || *q == '\0' || *p != *q)
+        for (char *start = haystack; *start != '\0'; start++) {
+            char *p0 = start;
+            char *p1 = needle;
+            while (*p0 != '\0' && *p1 != '\0') {
+                if (*p0 != *p1)
                     break;
-                p++;
-                q++;
+                p0++;
+                p1++;
             }
-            if (*q == '\0')
+            if (*p1 == '\0')
                 return start;
-            if (*p == '\0')
+            if (*p0 == '\0')
                 break;
-            start++;
         }
         return NULL;
     }
