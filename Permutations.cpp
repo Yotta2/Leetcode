@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -28,21 +29,22 @@ class Solution {
 public:
     vector<vector<int> > permute(vector<int> &num) {
         vector<vector<int> > ans;
-        vector<int> soFar;
-        dfs(soFar, num, ans);
+        vector<int> perm;
+        dfs(perm, num, ans);
         return ans;
     }
-    void dfs(vector<int> soFar, vector<int> remaining, vector<vector<int> > &ans) {
+private:
+    void dfs(vector<int> &soFar, vector<int> &remaining, vector<vector<int> > &ans) {
         if (remaining.empty()) {
             ans.push_back(soFar);
             return;
         }
         for (int i = 0; i < remaining.size(); i++) {
-            vector<int> newRe = remaining;
-            vector<int> newSoFar = soFar;
-            newRe.erase(newRe.begin() + i);
-            newSoFar.push_back(remaining[i]);
-            dfs(newSoFar, newRe, ans);
+            soFar.push_back(remaining[i]);
+            vector<int> newRemaining = remaining;
+            newRemaining.erase(newRemaining.begin() + i);
+            dfs(soFar, newRemaining, ans);
+            soFar.pop_back();
         }
     }
 };
@@ -51,5 +53,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }

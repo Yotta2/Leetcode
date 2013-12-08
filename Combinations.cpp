@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,25 +28,21 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int> > combine(int n, int k) {
-        vector<vector<int> > ans;
-        vector<int> nums;
-        for (int i = 1; i <= n; i++)
-            nums.push_back(i);
         vector<int> soFar;
-        dfs(soFar, nums, k, ans);
+        vector<vector<int> > ans;
+        recGenerate(1, n, k, soFar, ans);
         return ans;
     }
-    void dfs(vector<int> soFar, vector<int> remaining, int k, vector<vector<int> > &ans) {
-        if (soFar.size() == k) {
+private:
+    void recGenerate(int start, int end, int k, vector<int> &soFar, vector<vector<int> > &ans) {
+        if (k == 0) {
             ans.push_back(soFar);
             return;
         }
-        for (int i = 0; i < remaining.size(); i++) {
-            vector<int> newSoFar = soFar;
-            vector<int> newRem = remaining;
-            newSoFar.push_back(remaining[i]);
-            newRem.erase(newRem.begin(), newRem.begin() + i + 1);
-            dfs(newSoFar, newRem, k, ans);
+        for (int i = start; i <= end; i++) {
+            soFar.push_back(i);
+            recGenerate(i + 1, end, k - 1, soFar, ans);
+            soFar.pop_back();
         }
     }
 };
@@ -54,6 +51,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }
-

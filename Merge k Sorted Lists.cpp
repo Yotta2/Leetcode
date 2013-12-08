@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,31 +37,26 @@ struct ListNode {
 class Solution {
 public:
     ListNode *mergeKLists(vector<ListNode *> &lists) {
-        ListNode *head = new ListNode(0);
-        ListNode *curr = head;
-
+        ListNode *dummy = new ListNode(0);
+        ListNode *curr = dummy;
         while (true) {
-            int emptyCount = 0;
-            ListNode **least = NULL;
-            for (int i = 0; i < lists.size(); i++)
-                if (lists[i] == NULL)
-                    emptyCount++;
-                else {
-                    if (least == NULL)
-                        least = &lists[i];
-                    else if ((*least)->val > lists[i]->val)
-                        least = &lists[i];
+            int minIndexTmp = -1;
+            int minValTmp = INT_MAX;
+            for (int i = 0; i < lists.size(); i++) {
+                if (lists[i] != NULL && lists[i]->val < minValTmp) {
+                    minIndexTmp = i;
+                    minValTmp = lists[i]->val;
                 }
-            if (emptyCount == lists.size())
+            }
+            if (minIndexTmp == -1)
                 break;
-            curr->next = *least;
+            curr->next = lists[minIndexTmp];
             curr = curr->next;
-            *least = (*least)->next;
+            lists[minIndexTmp] = lists[minIndexTmp]->next;
         }
-        curr = head; // delete dummy
-        head = head->next;
-        delete curr;
-        return head;
+        ListNode *mergedHead = dummy->next;
+        delete dummy;
+        return mergedHead;
     }
 };
 
@@ -68,5 +64,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }

@@ -17,6 +17,8 @@
 #include <functional>
 #include <queue>
 #include <cctype>
+#include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,26 +38,24 @@ struct TreeNode {
 class Solution {
 public:
     int sumNumbers(TreeNode *root) {
+        int val = 0;
         int sum = 0;
-        string str;
-        if (root != NULL)
-            dfs(root, str, sum);
+        if (root == NULL)
+            return sum;
+        dfs(root, val, sum);
         return sum;
     }
-    void dfs(TreeNode *root, string str, int &sum) {
-        char ch = '0' + root->val;
-        str += ch;
+private:
+    void dfs(TreeNode *root, int val, int &sum) {
+        val = val * 10 + root->val;
         if (root->left == NULL && root->right == NULL) {
-            int num = 0;
-            if (!str.empty())
-                sscanf(str.c_str(), "%d", &num);
-            sum += num;
+            sum += val;
             return;
         }
         if (root->left != NULL)
-            dfs(root->left, str, sum);
+            dfs(root->left, val, sum);
         if (root->right != NULL)
-            dfs(root->right, str, sum);
+            dfs(root->right, val, sum);
     }
 };
 
@@ -63,5 +63,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }

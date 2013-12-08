@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -28,18 +29,19 @@ class Solution {
 public:
     vector<string> generateParenthesis(int n) {
         vector<string> ans;
-        dfs("", 0, 0, n, n * 2, ans);
+        dfs("", n, 0, 0, ans);
         return ans;
     }
-    void dfs(string soFar, int leftCount, int rightCount, int n, int remaining, vector<string> &ans) {
-        if (leftCount < rightCount || leftCount > n || rightCount > n)
-            return;
-        if (remaining == 0) {
+private:
+    void dfs(string soFar, int n, int leftCount, int rightCount, vector<string> &ans) {
+        if (leftCount == n && rightCount == n) {
             ans.push_back(soFar);
             return;
         }
-        dfs(soFar + "(", leftCount + 1, rightCount, n, remaining - 1, ans);
-        dfs(soFar + ")", leftCount, rightCount + 1, n, remaining - 1, ans);
+        if (leftCount + 1 >= rightCount && leftCount + 1 <= n)
+            dfs(soFar + '(', n, leftCount + 1, rightCount, ans);
+        if (rightCount + 1 <= leftCount && rightCount + 1 <= n)
+            dfs(soFar + ')', n, leftCount, rightCount + 1, ans);
     }
 };
 
@@ -47,5 +49,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }

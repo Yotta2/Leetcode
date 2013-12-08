@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,26 +28,26 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int> > permuteUnique(vector<int> &num) {
-        sort(num.begin(), num.end());
         vector<vector<int> > ans;
         vector<int> perm;
+        sort(num.begin(), num.end());
         dfs(perm, num, ans);
         return ans;
     }
 private:
-    void dfs(vector<int> &perm, vector<int> &remaining, vector<vector<int> > &ans) {
+    void dfs(vector<int> &soFar, vector<int> &remaining, vector<vector<int> > &ans) {
         if (remaining.empty()) {
-            ans.push_back(perm);
+            ans.push_back(soFar);
             return;
         }
         for (int i = 0; i < remaining.size(); i++) {
-            if (i != 0 && remaining[i] == remaining[i - 1])
+            if (i != 0 && remaining[i - 1] == remaining[i])
                 continue;
-            vector<int> newRem = remaining;
-            newRem.erase(newRem.begin() + i);
-            perm.push_back(remaining[i]);
-            dfs(perm, newRem, ans);
-            perm.pop_back();
+            soFar.push_back(remaining[i]);
+            vector<int> newRemaining = remaining;
+            newRemaining.erase(newRemaining.begin() + i);
+            dfs(soFar, newRemaining, ans);
+            soFar.pop_back();
         }
     }
 };
