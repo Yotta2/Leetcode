@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,46 +28,48 @@ using namespace std;
 class Solution {
 public:
     bool exist(vector<vector<char> > &board, string word) {
-        if (word.empty())
-            return true;
+        if (board.empty())
+            return false;
         vector<vector<bool> > used(board.size(), vector<bool>(board[0].size(), false));
+        bool found = false;
         for (int i = 0; i < board.size(); i++)
-            for (int j = 0; j < board[0].size(); j++)
-                if (word[0] == board[i][j]) {
-                    used[i][j] = true;
-                    if (dfs(i, j, board, 0, word, used))
-                        return true;
-                    used[i][j] = false;
-                }
-        return false;
-    }
-    bool dfs(int x, int y, vector<vector<char> > &board,
-             int i, string word, vector<vector<bool> > &used) {
-        if (i == word.size() - 1)
-            return true;
-        int dir[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        for (int j = 0; j < 4; j++) {
-            int nextX = x + dir[j][0];
-            int nextY = y + dir[j][1];
-            if (nextX < 0 || nextX >= board.size() || nextY < 0 || nextY >= board[0].size())
-                continue;
-            if (used[nextX][nextY])
-                continue;
-            if (word[i + 1] == board[nextX][nextY]) {
-                used[nextX][nextY] = true;
-                if (dfs(nextX, nextY, board, i + 1, word, used))
-                    return true;
-                used[nextX][nextY] = false;
+            for (int j = 0; j < board[0].size(); j++) {
+                used[i][j] = true;
+                dfs(i, j, board, 0, word, found, used);
+                used[i][j] = false;
             }
-        }
-        return false;
+        return found;
     }
+private:
+    void dfs(int x, int y, vector<vector<char> > &board,
+             int index, string word, bool &found, vector<vector<bool> > &used) {
+        if (found)
+            return;
+        if (board[x][y] != word[index])
+            return;
+        if (index == word.size() - 1) {
+            found = true;
+            return;
+        }
+        for (int i = 0; i < 4; i++) {
+            int xNext = x + delta[i][0];
+            int yNext = y + delta[i][1];
+            if (xNext < 0 || yNext < 0 || xNext >= board.size() || yNext >= board[0].size())
+                continue;
+            if (used[xNext][yNext])
+                continue;
+            used[xNext][yNext] = true;
+            dfs(xNext, yNext, board, index + 1, word, found, used);
+            used[xNext][yNext] = false;
+        }
+    }
+    int delta[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 };
 
 int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
+    Solution sol;
     return 0;
 }
-

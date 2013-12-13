@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -30,16 +31,15 @@ public:
         int i = 0;
         int j = x;
         while (i <= j) {
-            int m = (i + j) / 2;
-            long long tmp = (long long)m * m;
-            if (tmp == x)
+            long long m = (i + j) / 2;
+            if (m * m == x)
                 return m;
-            if (tmp > x)
+            if (m * m > x)
                 j = m - 1;
             else
                 i = m + 1;
         }
-        return i - 1; // return lower bound
+        return i - 1;
     }
 };
 
@@ -48,7 +48,6 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    cout << sol.sqrt(1073741824) << endl;
+    cout << sol.sqrt(2147395599);
     return 0;
 }
-

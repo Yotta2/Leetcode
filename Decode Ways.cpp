@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -29,29 +30,20 @@ public:
     int numDecodings(string s) {
         if (s.empty())
             return 0;
-        unordered_map<string, string> numToLetterMap;
-        init(numToLetterMap);
-        vector<int> f(s.size() + 1, 0);
-        f[s.size()] = 1;
-        for (int i = s.size() - 1; i >= 0; i--)
-            if (s[i] == '0') {
-                f[i] = 0;
-            } else {
-                if (i + 2 <= s.size() && numToLetterMap.find(s.substr(i, 2)) != numToLetterMap.end())
-                    f[i] = f[i + 1] + f[i + 2];
-                else
-                    f[i] = f[i + 1];
-            }
-        return f[0];
-    }
-private:
-    void init(unordered_map<string, string> &numToLetterMap) {
-        for (int i = 1; i <= 26; i++) {
-            char str[5];
-            sprintf(str, "%d", i);
-            char ch = 'A' + i - 1;
-            numToLetterMap[str] = string() + ch;
+        int prev0 = 1;
+        int prev1 = 0;
+        int curr = 0;
+        for (int i = s.size() - 1; i >= 0; i--) {
+            if (s[i] == '0')
+                curr = 0;
+            else if (i + 2 <= s.size() && ((s[i] - '0') * 10 + s[i + 1] - '0' <= 26))
+                curr = prev0 + prev1;
+            else
+                curr = prev0;
+            prev1 = prev0;
+            prev0 = curr;
         }
+        return curr;
     }
 };
 
@@ -60,7 +52,5 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    cout << sol.numDecodings("27") << endl;
     return 0;
 }
-
