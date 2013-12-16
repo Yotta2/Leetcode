@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -29,16 +30,11 @@ public:
     int removeDuplicates(int A[], int n) {
         if (n == 0)
             return 0;
-        int i = 0;
-        int j = 0;
-        while (j < n) {
-            while (j + 1 < n && A[j] == A[j + 1])
-                j++;
-            A[i] = A[j];
-            i++;
-            j++;
-        }
-        return i;
+        int index = 1;
+        for (int i = 1; i < n; i++)
+            if (A[i] != A[i - 1])
+                A[index++] = A[i];
+        return index;
     }
 };
 
@@ -46,9 +42,6 @@ int main() {
     ofstream fout("sol.out");
     ifstream fin("sol.in");
 
-    int A[] = {0, 0, 0, 0, 3};
     Solution sol;
-    sol.removeDuplicates(A, 5);
     return 0;
 }
-

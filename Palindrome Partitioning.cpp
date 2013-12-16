@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -26,43 +27,45 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string> > partition(string s) {
+    vector<vector<string>> partition(string s) {
         return recPartition(s);
     }
 private:
-    vector<vector<string> > recPartition(string s) { //can use dp to speed up
+    vector<vector<string> > recPartition(string s) {
+        vector<vector<string> > allPartition;
         if (s.empty())
-            return vector<vector<string> >(1, vector<string>());
-        vector<vector<string> > ans;
+            return allPartition;
         for (int i = 0; i < s.size(); i++) {
             string head = s.substr(0, i + 1);
-            if (isPalindrome(head)) {
-                string rest = s.substr(i + 1);
-                vector<vector<string> > tmp = recPartition(rest);
-                insertHead(head, tmp);
-                merge(ans, tmp);
-            }
+            if (!isPalindrome(head))
+                continue;
+            vector<vector<string> > subAllPart = recPartition(s.substr(i + 1));
+            merge(allPartition, head, subAllPart);
         }
-        return ans;
+        return allPartition;
     }
-    void merge(vector<vector<string> > &ans, vector<vector<string> > &tmp) {
-        for (int i = 0; i < tmp.size(); i++)
-            ans.push_back(tmp[i]);
+    void merge(vector<vector<string> > &allPartition,
+               string head,
+               vector<vector<string> > &subAllPart) {
+        if (subAllPart.empty()) {
+            allPartition.push_back(vector<string>(1, head));
+            return;
+        }
+        for (int i = 0; i < subAllPart.size(); i++) {
+            subAllPart[i].insert(subAllPart[i].begin(), head);
+            allPartition.push_back(subAllPart[i]);
+        }
     }
-    bool isPalindrome(string str) {
+    bool isPalindrome(string head) {
         int p = 0;
-        int q = str.size() - 1;
+        int q = head.size() - 1;
         while (p <= q) {
-            if (str[p] != str[q])
+            if (head[p] != head[q])
                 return false;
             p++;
             q--;
         }
         return true;
-    }
-    void insertHead(string head, vector<vector<string> > &tmp) {
-        for (int i = 0; i < tmp.size(); i++)
-            tmp[i].insert(tmp[i].begin(), head);
     }
 };
 
@@ -74,4 +77,3 @@ int main() {
     sol.partition("a");
     return 0;
 }
-

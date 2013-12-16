@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,25 +28,13 @@ using namespace std;
 class Solution {
 public:
     int removeDuplicates(int A[], int n) {
-        int i = 0;
-        int j = 0;
-        while (j < n) {
-            int count = 1;
-            while (j + 1 < n && A[j] == A[j + 1]) {
-                j++;
-                count++;
-            }
-            if (count >= 2) {
-                A[i] = A[j];
-                A[i + 1] = A[j];
-                i += 2;
-            } else {
-                A[i] = A[j];
-                i++;
-            }
-            j++;
-        }
-        return i;
+        if (n == 0)
+            return 0;
+        int index = 1;
+        for (int i = 1; i < n; i++)
+            if (i < 2 || A[i] != A[index - 2])
+                A[index++] = A[i];
+        return index;
     }
 };
 

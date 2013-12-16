@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,48 +28,45 @@ using namespace std;
 class Solution {
 public:
     int minCut(string s) {
-        vector<int> f(s.size(), 0);
-        vector<vector<int> > isPal(s.size(), vector<int>(s.size(), -1));
-        checkPal(isPal, s);
-        for (int i = 0; i < s.size(); i++)
-            f[i] = s.size() - i;
+        vector<int> f(s.size() + 1, INT_MAX);
+        vector<vector<int> > p(s.size() + 1, vector<int>(s.size() + 1, -1));
+        init(p, s);
         for (int i = s.size() - 1; i >= 0; i--) {
-            if (isPal[i][s.size() - 1]) {
+            if (p[i][s.size() - 1] == 1) {
                 f[i] = 0;
                 continue;
             }
-            for (int j = i + 1; j < s.size(); j++)
-                if (isPal[i][j - 1])
-                    f[i] = min(f[i], f[j] + 1);
+            for (int j = i + 1; j < s.size(); j++) {
+                if (p[i][j - 1] == 0)
+                    continue;
+                f[i] = min(f[j] + 1, f[i]);
+            }
         }
         return f[0];
     }
 private:
-    void checkPal(vector<vector<int> > &isPal, string &s) {
+    void init(vector<vector<int> > &p, string &s) {
         for (int i = 0; i < s.size(); i++)
             for (int j = i; j < s.size(); j++)
-                if (isPal[i][j] == -1) {
-                    recCheck(isPal, i, j, s);
-                }
+                recCheck(p, s, i, j);
     }
-    void recCheck(vector<vector<int> > &isPal, int i, int j, string &s) {
-        if (i > j)
+    void recCheck(vector<vector<int> > &p, string &s, int i, int j) {
+        if (i == j) {
+            p[i][j] = 1;
             return;
+        }
         if (s[i] != s[j]) {
-            isPal[i][j] = 0;
+            p[i][j] = 0;
             return;
+        } else {
+            if (i + 1 == j) {
+                p[i][j] = 1;
+                return;
+            }
+            if (p[i + 1][j - 1] == -1)
+                recCheck(p, s, i + 1, j - 1);
+            p[i][j] = p[i + 1][j - 1];
         }
-        if (j - i < 2) {
-            isPal[i][j] = 1;
-            return;
-        }
-
-        if (isPal[i + 1][j - 1] == -1)
-            recCheck(isPal, i + 1, j - 1, s);
-        if (isPal[i + 1][j - 1] == 1)
-            isPal[i][j] = 1;
-        else
-            isPal[i][j] = 0;
     }
 };
 
@@ -77,6 +75,5 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    cout << sol.minCut("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") << endl;
     return 0;
 }
