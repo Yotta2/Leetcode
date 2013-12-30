@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,22 +37,20 @@ struct ListNode {
 class Solution {
 public:
     ListNode *removeNthFromEnd(ListNode *head, int n) {
-        ListNode *dummy = new ListNode(0);
+        ListNode *dummy = new ListNode(-1);
         dummy->next = head;
-        head = dummy;
-        ListNode *fastRunner = head;
-        ListNode *slowRunner = head;
-        int count = 0;
-        while (fastRunner != NULL) {
-            if (count >= n + 1)
-                slowRunner = slowRunner->next;
-            fastRunner = fastRunner->next;
-            count++;
+        ListNode *fast = dummy;
+        ListNode *slow = dummy;
+        for (int i = 0; i < n; i++)
+            fast = fast->next;
+        while (fast->next != NULL) {
+            fast = fast->next;
+            slow = slow->next;
         }
-        ListNode *tmp = slowRunner->next;
-        slowRunner->next = slowRunner->next->next;
+        ListNode *tmp = slow->next;
+        slow->next = slow->next->next;
         delete tmp;
-        head = head->next;
+        head = dummy->next;
         delete dummy;
         return head;
     }
@@ -64,4 +63,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

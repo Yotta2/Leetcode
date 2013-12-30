@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,17 +28,18 @@ using namespace std;
 class Solution {
 public:
     int reverse(int x) {
-        int sign = 1;
-        if (x < 0) {
+        int sign;
+        if (x < 0)
             sign = -1;
-            x = sign * x;
-        }
-        int ans = 0;
+        else
+            sign = 1;
+        int result = 0;
+        x = abs(x);
         while (x != 0) {
-            ans = ans * 10 + x % 10;
+            result = result * 10 + x % 10;
             x /= 10;
         }
-        return ans * sign;
+        return sign * result;
     }
 };
 
@@ -48,4 +50,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

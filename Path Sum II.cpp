@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -37,27 +38,26 @@ struct TreeNode {
 class Solution {
 public:
     vector<vector<int> > pathSum(TreeNode *root, int sum) {
+        vector<int> soFar;
         vector<vector<int> > ans;
-        vector<int> path;
-        dfs(root, sum, path, ans);
+        if (root == NULL)
+            return ans;
+        dfs(root, sum, soFar, ans);
         return ans;
     }
 private:
-    void dfs(TreeNode *root, int remaining, vector<int> &path, vector<vector<int> > &ans) {
+    void dfs(TreeNode *root, int remaining,
+             vector<int> &soFar, vector<vector<int> > &ans) {
         if (root == NULL)
             return;
+        soFar.push_back(root->val);
         if (root->left == NULL && root->right == NULL) {
-            if (remaining - root->val == 0) {
-                path.push_back(root->val);
-                ans.push_back(path);
-                path.pop_back();
-            }
-            return;
+            if (remaining - root->val == 0)
+                ans.push_back(soFar);
         }
-        path.push_back(root->val);
-        dfs(root->left, remaining - root->val, path, ans);
-        dfs(root->right, remaining - root->val, path, ans);
-        path.pop_back();
+        dfs(root->left, remaining - root->val, soFar, ans);
+        dfs(root->right, remaining - root->val, soFar, ans);
+        soFar.pop_back();
     }
 };
 

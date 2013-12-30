@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -37,17 +38,16 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode *sortedArrayToBST(vector<int> &num) {
-        return buildBST(num, 0, num.size() - 1);
+        return recBuildBST(num, 0, num.size() - 1);
     }
-    TreeNode *buildBST(vector<int> &num, int low, int high) {
+private:
+    TreeNode *recBuildBST(vector<int> &num, int low, int high) {
         if (low > high)
             return NULL;
-        if (low == high)
-            return new TreeNode(num[low]);
         int mid = (low + high) / 2;
         TreeNode *root = new TreeNode(num[mid]);
-        root->left = buildBST(num, low, mid - 1);
-        root->right = buildBST(num, mid + 1, high);
+        root->left = recBuildBST(num, low, mid - 1);
+        root->right = recBuildBST(num, mid + 1, high);
         return root;
     }
 };
@@ -59,4 +59,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

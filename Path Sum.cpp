@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -39,15 +40,10 @@ public:
     bool hasPathSum(TreeNode *root, int sum) {
         if (root == NULL)
             return false;
-        if (root->left == NULL && root->right == NULL) {
-            if (sum == root->val)
-                return true;
-            else
-                return false;
-        }
-        if (hasPathSum(root->left, sum - root->val) ||
-            hasPathSum(root->right, sum - root->val))
-            return true;
+        if (root->left == NULL && root->right == NULL)
+            return (root->val == sum);
+        return hasPathSum(root->left, sum - root->val)
+            || hasPathSum(root->right, sum - root->val);
     }
 };
 
@@ -58,4 +54,3 @@ int main() {
     Solution sol;
     return 0;
 }
-
