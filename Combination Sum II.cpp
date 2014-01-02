@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,38 +28,34 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int> > combinationSum2(vector<int> &num, int target) {
-        sort(num.begin(), num.end());
+        vector<pair<int, int> > numToOccurrenceMap;
+        countOccurrence(num, numToOccurrenceMap);
         vector<vector<int> > ans;
-        vector<int> sol;
-        dfs(num, 0, target, sol, ans);
+        vector<int> soFar;
+        dfs(soFar, numToOccurrenceMap, 0, target, ans);
         return ans;
     }
 private:
-    void dfs(vector<int> &num, int index, int target, vector<int> &sol, vector<vector<int> > &ans) {
-        if (target < 0)
+    void countOccurrence(vector<int> &num, vector<pair<int, int> > &numToOccurrenceMap) {
+        map<int, int> hm;
+        for (int i = 0; i < num.size(); i++)
+            hm[num[i]]++;
+        for (map<int, int>::iterator itr = hm.begin(); itr != hm.end(); itr++)
+            numToOccurrenceMap.push_back(make_pair(itr->first, itr->second));
+    }
+    void dfs(vector<int> &soFar, vector<pair<int, int> > &numToOccurrenceMap,
+             int i, int remaining, vector<vector<int> > &ans) {
+        if (remaining == 0)
+            ans.push_back(soFar);
+        if (i == numToOccurrenceMap.size() || remaining <= 0
+            || remaining < numToOccurrenceMap[i].first)
             return;
-        if (index == num.size()) {
-            if (target == 0)
-                ans.push_back(sol);
-            return;
-        }
-        int count = 1;
-        int tmp = num[index];
-        index++;
-        while (true) {
-            if (index >= num.size())
-                break;
-            if (num[index] != num[index - 1])
-                break;
-            count++;
-            index++;
-        }
-        for (int i = 0; i <= count; i++) {
-            for (int j = 1; j <= i; j++)
-                sol.push_back(tmp);
-            dfs(num, index, target - tmp * i, sol, ans);
-            for (int j = 1; j <= i; j++)
-                sol.pop_back();
+        for (int j = 0; j <= numToOccurrenceMap[i].second; j++) {
+            for (int k = 0; k < j; k++)
+                soFar.push_back(numToOccurrenceMap[i].first);
+            dfs(soFar, numToOccurrenceMap, i + 1, remaining - numToOccurrenceMap[i].first * j, ans);
+            for (int k = 0; k < j; k++)
+                soFar.pop_back();
         }
     }
 };

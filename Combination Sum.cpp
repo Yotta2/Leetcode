@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -28,25 +29,26 @@ class Solution {
 public:
     vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
         sort(candidates.begin(), candidates.end());
-        vector<vector<int> > ans;
         vector<int> soFar;
-        dfs(soFar, 0, candidates, 0, target, ans);
+        vector<vector<int> > ans;
+        dfs(candidates, 0, soFar, target, ans);
         return ans;
     }
 private:
-    void dfs(vector<int> &soFar, int index, vector<int> &candidates, int currSum, int target, vector<vector<int> > &ans) {
-        if (currSum > target)
-            return;
-        if (currSum == target) {
+    void dfs(vector<int> &candidates, int i, vector<int> &soFar,
+             int remaining, vector<vector<int> > &ans) {
+        if (remaining == 0)
             ans.push_back(soFar);
+        if (i >= candidates.size() || remaining == 0)
             return;
+        int n = remaining / candidates[i];
+        for (int j = 0; j <= n; j++) {
+            for (int k = 0; k < j; k++)
+                soFar.push_back(candidates[i]);
+            dfs(candidates, i + 1, soFar, remaining - candidates[i] * j, ans);
+            for (int k = 0; k < j; k++)
+                soFar.pop_back();
         }
-        if (index >= candidates.size())
-            return;
-        soFar.push_back(candidates[index]);
-        dfs(soFar, index, candidates, currSum + candidates[index], target, ans);
-        soFar.pop_back();
-        dfs(soFar, index + 1, candidates, currSum, target, ans);
     }
 };
 
@@ -57,4 +59,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

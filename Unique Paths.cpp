@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -31,10 +32,7 @@ public:
         f[m - 1][n - 1] = 1;
         for (int i = m - 1; i >= 0; i--)
             for (int j = n - 1; j >= 0; j--)
-                if (i == m - 1 && j == n - 1)
-                    continue;
-                else
-                    f[i][j] = f[i + 1][j] + f[i][j + 1];
+                f[i][j] += f[i + 1][j] + f[i][j + 1];
         return f[0][0];
     }
 };
@@ -46,4 +44,3 @@ int main() {
     Solution sol;
     return 0;
 }
-
