@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,31 +28,37 @@ using namespace std;
 class Solution {
 public:
     bool searchMatrix(vector<vector<int> > &matrix, int target) {
-        int low, high, mid;
-        low = 0;
-        high = matrix.size() - 1;
-        while (low <= high) {
-            mid = (low + high) / 2;
-            if (matrix[mid][0] == target)
-                return true;
-            if (matrix[mid][0] > target)
-                high = mid - 1;
+        int row = findRow(matrix, target);
+        if (row >= 0 && row < matrix.size())
+            return bsearch(matrix[row], target);
+        return false;
+    }
+private:
+    int findRow(vector<vector<int> > &matrix, int target) {
+        int i = 0;
+        int j = matrix.size() - 1;
+        while (i <= j) {
+            int m = (i + j) / 2;
+            if (matrix[m][0] == target)
+                return m;
+            else if (matrix[m][0] > target)
+                j = m - 1;
             else
-                low = mid + 1;
+                i = m + 1;
         }
-        int row = low - 1;
-        if (row < 0)
-            return false;
-        low = 0;
-        high = matrix[0].size() - 1;
-        while (low <= high) {
-            mid = (low + high) / 2;
-            if (matrix[row][mid] == target)
+        return i - 1;
+    }
+    bool bsearch(vector<int> &nums, int target) {
+        int i = 0;
+        int j = nums.size() - 1;
+        while (i <= j) {
+            int m = (i + j) / 2;
+            if (nums[m] == target)
                 return true;
-            if (matrix[row][mid] > target)
-                high = mid - 1;
+            else if (nums[m] < target)
+                i = m + 1;
             else
-                low = mid + 1;
+                j = m - 1;
         }
         return false;
     }
@@ -64,4 +71,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

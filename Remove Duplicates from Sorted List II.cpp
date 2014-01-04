@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,23 +37,21 @@ struct ListNode {
 class Solution {
 public:
     ListNode *deleteDuplicates(ListNode *head) {
-        ListNode *dummy = new ListNode(0);
+        ListNode *dummy = new ListNode(-1);
         dummy->next = head;
         ListNode *curr = dummy;
-        while (curr != NULL) {
+        while (true) {
             if (curr->next == NULL || curr->next->next == NULL)
                 break;
-            if (curr->next->val != curr->next->next->val)
-                curr = curr->next;
-            else {
+            if (curr->next->val == curr->next->next->val) {
                 int val = curr->next->val;
-                while (true) {
-                    if (curr->next == NULL || curr->next->val != val)
-                        break;
-                    ListNode *p = curr->next;
+                while (curr->next != NULL && curr->next->val == val) {
+                    ListNode *tmp = curr->next;
                     curr->next = curr->next->next;
-                    delete p;
+                    delete tmp;
                 }
+            } else {
+                curr = curr->next;
             }
         }
         head = dummy->next;
@@ -66,9 +65,5 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    ListNode *head = new ListNode(1);
-    head->next = new ListNode(1);
-    head = sol.deleteDuplicates(head);
     return 0;
 }
-
