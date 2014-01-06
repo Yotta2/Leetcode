@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,29 +37,29 @@ struct ListNode {
 class Solution {
 public:
     ListNode *partition(ListNode *head, int x) {
-        ListNode *dummy = new ListNode(0);
+        ListNode *dummy = new ListNode(-1);
         dummy->next = head;
-        ListNode *oldCurr = dummy;
-        ListNode *newHead = new ListNode(0);
-        ListNode *newCurr = newHead;
-        while (true) {
-            if (oldCurr == NULL || oldCurr->next == NULL)
-                break;
-            if (oldCurr->next->val < x) {
-                newCurr->next = oldCurr->next;
-                oldCurr->next = oldCurr->next->next;
-                newCurr = newCurr->next;
-                newCurr->next = NULL;
+        ListNode *gHead = new ListNode(-1);
+        ListNode *curr = dummy;
+        ListNode *gCurr = gHead;
+        while (curr->next != NULL) {
+            if (curr->next->val < x) {
+                curr = curr->next;
             } else {
-                oldCurr = oldCurr->next;
+                gCurr->next = curr->next;
+                curr->next = curr->next->next;
+                gCurr = gCurr->next;
+                gCurr->next = NULL;
             }
         }
-        newCurr->next = dummy->next;
-        delete dummy;
-        dummy = newHead;
-        newHead = newHead->next;
-        delete dummy;
-        return newHead;
+        ListNode *tmp = gHead;
+        gHead = gHead->next;
+        delete tmp;
+        curr->next = gHead;
+        tmp = dummy;
+        head = dummy->next;
+        delete tmp;
+        return head;
     }
 };
 
@@ -69,4 +70,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

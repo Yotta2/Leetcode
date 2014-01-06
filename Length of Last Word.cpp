@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,17 +28,14 @@ using namespace std;
 class Solution {
 public:
     int lengthOfLastWord(const char *s) {
-        if (s[0] == '\0')
-            return 0;
-        int i = 0;
-        while (s[i] != '\0')
-            i++;
         int len = 0;
-        i--;
+        int i = strlen(s) - 1;
         while (i >= 0 && s[i] == ' ')
             i--;
         while (true) {
-            if (s[i] == ' ' || i < 0)
+            if (i < 0)
+                break;
+            if (s[i] == ' ')
                 break;
             len++;
             i--;
@@ -51,6 +49,5 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    cout << sol.lengthOfLastWord("a ") << endl;
     return 0;
 }

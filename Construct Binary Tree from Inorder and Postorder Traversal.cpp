@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -37,23 +38,25 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
-        if (inorder.size() == 0)
-            return NULL;
-        return recBuild(inorder, 0, inorder.size() - 1, postorder, 0, postorder.size() - 1);
+        return recBuild(inorder, 0, inorder.size() - 1,
+                        postorder, 0, postorder.size() - 1);
     }
 private:
-    TreeNode *recBuild(vector<int> &inorder, int inLow, int inHigh, vector<int> &postorder, int postLow, int postHigh) {
-        if (inLow > inHigh)
+    TreeNode *recBuild(vector<int> &inorder, int iStart, int iEnd,
+                       vector<int> &postorder, int pStart, int pEnd) {
+        if (iStart > iEnd)
             return NULL;
-        TreeNode *root = new TreeNode(postorder[postHigh]);
-        int count = 0;
-        for (int i = inLow; i <= inHigh; i++)
-            if (inorder[i] == postorder[postHigh])
+        int rootIndex;
+        for (int i = iStart; i <= iEnd; i++)
+            if (inorder[i] == postorder[pEnd]) {
+                rootIndex = i;
                 break;
-            else
-                count++;
-        root->left = recBuild(inorder, inLow, inLow + count - 1, postorder, postLow, postLow + count - 1);
-        root->right = recBuild(inorder, inLow + count + 1, inHigh, postorder, postLow + count, postHigh - 1);
+            }
+        TreeNode *root = new TreeNode(postorder[pEnd]);
+        root->left = recBuild(inorder, iStart, rootIndex - 1,
+                              postorder, pStart, pStart + rootIndex - iStart - 1);
+        root->right = recBuild(inorder, rootIndex + 1, iEnd,
+                               postorder, pStart + rootIndex - iStart, pEnd - 1);
         return root;
     }
 };
@@ -65,4 +68,3 @@ int main() {
     Solution sol;
     return 0;
 }
-
