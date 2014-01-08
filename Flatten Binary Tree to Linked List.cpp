@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -37,26 +38,22 @@ struct TreeNode {
 class Solution {
 public:
     void flatten(TreeNode *root) {
-        preorderTraverse(root);
+        TreeNode *dummy = new TreeNode(-1);
+        TreeNode *curr = dummy;
+        preorderTraverse(root, curr);
+        delete dummy;
     }
 private:
-    TreeNode *preorderTraverse(TreeNode *root) {  // return a pointer to the last visited treenode
+    void preorderTraverse(TreeNode *root, TreeNode* &curr) {
         if (root == NULL)
-            return NULL;
-        TreeNode *leftLast = preorderTraverse(root->left);
-        if (leftLast != NULL) {
-            leftLast->right = root->right;
-            root->right = root->left;
-        }
-        TreeNode *rightLast = preorderTraverse(root->right);
-        root->left = NULL;
-        if (rightLast == NULL) {
-            if (leftLast == NULL)
-                return root;
-            else
-                return leftLast;
-        } else
-            return rightLast;
+            return;
+        TreeNode *leftRoot = root->left;
+        TreeNode *rightRoot = root->right;
+        root->left = root->right = NULL;
+        curr->right = root;
+        curr = root;
+        preorderTraverse(leftRoot, curr);
+        preorderTraverse(rightRoot, curr);
     }
 };
 
@@ -67,4 +64,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

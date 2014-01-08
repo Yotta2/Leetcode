@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -36,31 +37,29 @@ struct TreeLinkNode {
 class Solution {
 public:
     void connect(TreeLinkNode *root) {
-        int i = 1;
+        int level = 0;
         while (true) {
             TreeLinkNode *curr = NULL;
-            inorderTraverse(root, 0, i, curr);
+            preorderTraverse(root, level, 0, curr);
             if (curr == NULL)
                 break;
-            i++;
+            level++;
         }
     }
 private:
-    void inorderTraverse(TreeLinkNode *root, int level, int mark, TreeLinkNode* &curr) {
+    void preorderTraverse(TreeLinkNode *root, int level, int currLevel, TreeLinkNode* &curr) {
         if (root == NULL)
             return;
-        if (level == mark + 1)
-            return;
-        inorderTraverse(root->left, level + 1, mark, curr);
-        if (level == mark) {
-            if (curr == NULL)
+        if (currLevel == level) {
+            if (curr == NULL) {
                 curr = root;
-            else {
+            } else {
                 curr->next = root;
                 curr = curr->next;
             }
         }
-        inorderTraverse(root->right, level + 1, mark, curr);
+        preorderTraverse(root->left, level, currLevel + 1, curr);
+        preorderTraverse(root->right, level, currLevel + 1, curr);
     }
 };
 
@@ -71,4 +70,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

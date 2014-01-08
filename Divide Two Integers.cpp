@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,26 +28,15 @@ using namespace std;
 class Solution {
 public:
     int divide(int dividend, int divisor) {
-        long long a = dividend;
-        long long b = divisor;
-        if (a == 0)
-            return 0;
-        if (b == 1)
-            return a;
-        if (b == 2)
-            return a >> 1;
-        bool sign;
-        if (a > 0 && b < 0 || a < 0 && b > 0)
-            sign = false; // negative
+        int sign = -1;
+        if (dividend > 0 && divisor > 0
+            || dividend < 0 && divisor < 0)
+            sign = 1;
+        long double result = pow((long double)2, log2((long double)fabs(dividend)) - log2((long double)fabs(divisor)));
+        if (sign == -1)
+            return -result;
         else
-            sign = true;
-        a = fabs(a);
-        b = fabs(b);
-        long long ans = pow(2, log2((double)a) - log2((double)b));
-        if (sign)
-            return ans;
-        else
-            return -ans;
+            return result;
     }
 };
 
@@ -55,7 +45,8 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    cout << sol.divide(2147483647, 1) << endl;
+    cout << log(5.5) << endl;
+    cout << log(2) << endl;
+    cout << sol.divide(5, 2) << endl;
     return 0;
 }
-
