@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -29,25 +30,22 @@ public:
     bool isPalindrome(int x) {
         if (x < 0)
             return false;
-        int len = getLen(x);
-        int i = 0;
-        while (i < len / 2) {
-            int right = x / (int)pow(10, i) % 10;
-            int left = x / (int)pow(10, len - i - 1) % 10;
-            if (right != left)
-                return false;
-            i++;
-        }
-        return true;
-    }
-private:
-    int getLen(int x) {
+        if (x == 0)
+            return true;
         int len = 0;
-        while (x != 0) {
-            x /= 10;
+        int tmp = x;
+        while (tmp != 0) {
+            tmp /= 10;
             len++;
         }
-        return len;
+        len--;
+        for (int i = 0; i <= len / 2; i++) {
+            int digit0 = x / (int)pow(10, i) % 10;
+            int digit1 = x / (int)pow(10, len - i) % 10;
+            if (digit0 != digit1)
+                return false;
+        }
+        return true;
     }
 };
 

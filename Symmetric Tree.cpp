@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -39,17 +40,17 @@ public:
     bool isSymmetric(TreeNode *root) {
         if (root == NULL)
             return true;
-        return isSymmetric(root->left, root->right);
+        return areSymmetric(root->left, root->right);
     }
 private:
-    bool isSymmetric(TreeNode *root1, TreeNode *root2) {
-        if (root1 == NULL && root2 == NULL)
+    bool areSymmetric(TreeNode *root0, TreeNode *root1) {
+        if (root0 == NULL && root1 == NULL)
             return true;
-        if (root1 == NULL || root2 == NULL)
+        if (root0 == NULL || root1 == NULL)
             return false;
-        return root1->val == root2->val
-                && isSymmetric(root1->left, root2->right)
-                && isSymmetric(root1->right, root2->left);
+        return (root0->val == root1->val)
+            && areSymmetric(root0->left, root1->right)
+            && areSymmetric(root0->right, root1->left);
     }
 };
 

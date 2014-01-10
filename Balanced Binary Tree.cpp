@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -37,30 +38,19 @@ struct TreeNode {
 class Solution {
 public:
     bool isBalanced(TreeNode *root) {
-         treerootToHeightMap hm;
-         hm[NULL] = 0;
-         getHeight(root, hm);
-         bool balanced = true;
-         inorderTraverseCheck(root, hm, balanced);
-         return balanced;
+        bool flag = true;
+        getHeight(root, flag);
+        return flag;
     }
 private:
-    typedef unordered_map<TreeNode *, int> treerootToHeightMap;
-    int getHeight(TreeNode *root, treerootToHeightMap &hm) {
+    int getHeight(TreeNode *root, bool &flag) {
         if (root == NULL)
             return 0;
-        int leftHeight = getHeight(root->left, hm);
-        int rightHeight = getHeight(root->right, hm);
-        hm[root] = max(leftHeight, rightHeight) + 1;
-        return hm[root];
-    }
-    void inorderTraverseCheck(TreeNode *root, treerootToHeightMap &hm, bool &balanced) {
-        if (root == NULL)
-            return;
-        inorderTraverseCheck(root->left, hm, balanced);
-        if (fabs(hm[root->left] - hm[root->right]) > 1)
-            balanced = false;
-        inorderTraverseCheck(root->right, hm, balanced);
+        int leftTreeHeight = getHeight(root->left, flag);
+        int rightTreeHeight = getHeight(root->right, flag);
+        if (abs(leftTreeHeight - rightTreeHeight) > 1)
+            flag = false;
+        return max(leftTreeHeight, rightTreeHeight) + 1;
     }
 };
 
