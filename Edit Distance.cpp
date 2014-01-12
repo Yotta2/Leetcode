@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,20 +28,21 @@ using namespace std;
 class Solution {
 public:
     int minDistance(string word1, string word2) {
+        word1.insert(word1.begin(), '/');
+        word2.insert(word2.begin(), '/');
         vector<vector<int> > f(word1.size() + 1, vector<int>(word2.size() + 1, 0));
-        for (int i = word1.size(); i >= 0; i--)
-            for (int j = word2.size(); j >= 0; j--) {
-                if (i == word1.size())
-                    f[i][j] = word2.size() - j;
-                else if (j == word2.size())
-                    f[i][j] = word1.size() - i;
+        for (int i = 0; i < word1.size(); i++)
+            for (int j = 0; j < word2.size(); j++) {
+                if (i == 0)
+                    f[i][j] = j;
+                else if (j == 0)
+                    f[i][j] = i;
                 else if (word1[i] == word2[j])
-                    f[i][j] = f[i + 1][j + 1];
+                    f[i][j] = f[i - 1][j - 1];
                 else
-                    f[i][j] = min(f[i][j + 1] + 1, min(f[i + 1][j] + 1, f[i + 1][j + 1] + 1));
+                    f[i][j] = min(f[i][j - 1], min(f[i - 1][j], f[i - 1][j - 1])) + 1;
             }
-
-        return f[0][0];
+        return f[word1.size() - 1][word2.size() - 1];
     }
 };
 
@@ -49,9 +51,6 @@ int main() {
     ifstream fin("sol.in");
 
     Solution sol;
-    cout << sol.minDistance("abe", "fgh") << endl;
-    cout << sol.minDistance("abe", "z") << endl;
-    cout << sol.minDistance("", "abe") << endl;
-    cout << sol.minDistance("a", "a") << endl;
     return 0;
 }
+

@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -33,10 +34,10 @@ public:
             int m = (i + j) / 2;
             if (A[m] == target)
                 return m;
-            if (A[m] < target)
-                i = m + 1;
-            else
+            if (A[m] > target)
                 j = m - 1;
+            else
+                i = m + 1;
         }
         return i;
     }
@@ -49,3 +50,4 @@ int main() {
     Solution sol;
     return 0;
 }
+

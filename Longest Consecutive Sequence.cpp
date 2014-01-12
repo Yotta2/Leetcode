@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -27,28 +28,30 @@ using namespace std;
 class Solution {
 public:
     int longestConsecutive(vector<int> &num) {
-        unordered_map<int, bool> hm;
+        unordered_set<int> nums;
+        for (int i = 0; i < num.size(); i++)
+            nums.insert(num[i]);
         int ans = 0;
-        for (int i = 0; i < num.size(); i++)
-            hm[num[i]] = false;
-        for (int i = 0; i < num.size(); i++)
-            if (hm[num[i]] == false) {
-                int count = 1;
-                int tmp = num[i] - 1;
-                while (hm.find(tmp) != hm.end()) {
-                    hm[tmp] = true;
-                    tmp--;
-                    count++;
+        for (int i = 0; i < num.size(); i++) {
+            if (nums.find(num[i]) != nums.end()) {
+                nums.erase(num[i]);
+                int start = num[i];
+                int end = num[i];
+                while (true) {
+                    if (nums.find(start - 1) == nums.end())
+                        break;
+                    start--;
+                    nums.erase(start);
                 }
-                tmp = num[i] + 1;
-                while (hm.find(tmp) != hm.end()) {
-                    hm[tmp] = true;
-                    tmp++;
-                    count++;
+                while (true) {
+                    if (nums.find(end + 1) == nums.end())
+                        break;
+                    end++;
+                    nums.erase(end);
                 }
-                if (count > ans)
-                    ans = count;
+                ans = max(ans, end - start + 1);
             }
+        }
         return ans;
     }
 };
@@ -60,3 +63,4 @@ int main() {
     Solution sol;
     return 0;
 }
+

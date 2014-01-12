@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -28,46 +29,39 @@ class Solution {
 public:
     vector<vector<string> > solveNQueens(int n) {
         vector<vector<string> > ans;
-        vector<string> board(n, string(n, '.'));
-        dfs(board, 0, n, ans);
+        vector<string> sol(n, string(n, '.'));
+        dfs(0, n, sol, ans);
         return ans;
     }
 private:
-    bool isOutofBound(int x, int y, int n) {
-        if (x < 0 || x >= n || y < 0 || y >= n)
-            return true;
-        else
-            return false;
-    }
-    bool isLegal(int x, int y, vector<string> &board) {
-        int dir[3][2] = {{-1, -1}, {-1, 0}, {-1, 1}};  // \ | / direction
-        // \ direction
+    int delta[3][2] = {{-1, -1}, {-1, 0}, {-1, 1}};
+    bool isValid(vector<string> &sol, int x, int y) {
         for (int i = 0; i < 3; i++) {
-            int xNext = x + dir[i][0];
-            int yNext = y + dir[i][1];
+            int nextX = x + delta[i][0];
+            int nextY = y + delta[i][1];
             while (true) {
-                if (isOutofBound(xNext, yNext, board.size()))
+                if (nextX < 0 || nextX >= sol.size() || nextY < 0 || nextY >= sol.size())
                     break;
-                if (board[xNext][yNext] == 'Q')
+                if (sol[nextX][nextY] == 'Q')
                     return false;
-                xNext = xNext + dir[i][0];
-                yNext = yNext + dir[i][1];
+                nextX += delta[i][0];
+                nextY += delta[i][1];
             }
         }
         return true;
     }
-
-    void dfs(vector<string> &board, int row, int n, vector<vector<string> > &ans) {
-        if (n == row) {
-            ans.push_back(board);
+    void dfs(int rol, int n, vector<string> &sol, vector<vector<string> > &ans) {
+        if (rol == n) {
+            ans.push_back(sol);
             return;
         }
-        for (int i = 0; i < n; i++)
-            if (isLegal(row, i, board)) {
-                board[row][i] = 'Q';
-                dfs(board, row + 1, n, ans);
-                board[row][i] = '.';
+        for (int i = 0; i < n; i++) {
+            if (isValid(sol, rol, i)) {
+                sol[rol][i] = 'Q';
+                dfs(rol + 1, n, sol, ans);
+                sol[rol][i] = '.';
             }
+        }
     }
 };
 
@@ -78,4 +72,3 @@ int main() {
     Solution sol;
     return 0;
 }
-

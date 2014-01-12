@@ -18,6 +18,7 @@
 #include <queue>
 #include <cctype>
 #include <sstream>
+#include <utility>
 
 #define EPS 1e-6
 #define SIZE 11000
@@ -39,8 +40,7 @@ public:
     int maxDepth(TreeNode *root) {
         if (root == NULL)
             return 0;
-        int tmp = max(maxDepth(root->left), maxDepth(root->right));
-        return 1 + tmp;
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
     }
 };
 
@@ -51,3 +51,4 @@ int main() {
     Solution sol;
     return 0;
 }
+
